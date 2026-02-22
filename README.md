@@ -24,7 +24,7 @@
 
 
 
-### \## Tecnologías
+###  Tecnologías
 
 ### 
 
@@ -47,6 +47,7 @@
 
 
 ### *Datos utilizados fueron anonimizados para fines demostrativos.*   
+
 
 
 
