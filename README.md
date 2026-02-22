@@ -22,9 +22,9 @@
 
 ### \- Reducir errores manuales
 
+###
 
-
-###  Tecnologías
+##  Tecnologías
 
 ### 
 
@@ -44,9 +44,10 @@
 
 ### Demostrar cómo automatizar análisis de datos operativos para mejorar eficiencia y calidad de información.
 
-
+###
 
 ### *Datos utilizados fueron anonimizados para fines demostrativos.*   
+
 
 
 
