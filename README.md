@@ -38,7 +38,7 @@
 
 ### 
 
-### \## Objetivo
+###  Objetivo
 
 ### 
 
@@ -47,5 +47,6 @@
 
 
 ### *Datos utilizados fueron anonimizados para fines demostrativos.*   
+
 
 
