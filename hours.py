@@ -17,7 +17,7 @@ def leer_pay_rates(ruta_divisores: str) -> np.ndarray:
 
     rates = (
         div["PAY RATE"]
-        .apply(_to_float_from_text)   # convierte 16,1 -> 16.1
+        .apply(_to_float_from_text) 
         .dropna()
         .astype(float)
         .unique()
@@ -35,14 +35,14 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     if faltan:
         raise ValueError(f"Faltan columnas en el resumen: {faltan}")
 
-    # Asegurar numéricos (por si vienen con coma)
+    
     for c in required:
         df[c] = df[c].astype(str).str.replace(",", ".", regex=False)
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
 
     rates = leer_pay_rates(ruta_divisores)
 
-    # Elegir PAY RATE por fila: primer rate que haga REG PAY / PAY RATE <= 40
+    
     rate_req = df["REG PAY"].to_numpy() / 40.0
     idx = np.searchsorted(rates, rate_req, side="left")
     idx = np.clip(idx, 0, len(rates) - 1)
@@ -51,20 +51,20 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     df["PAY RATE"] = np.round(pay_rate, 2)
     df["REG HOURS"] = np.round(df["REG PAY"].to_numpy() / pay_rate, 2)
 
-    # Rates OT/DT: si no hay pago, dejar rate = 0 (como tu imagen)
+    
     df["OT RATE"] = np.where(df["OT PAY"].to_numpy() > 0, np.round(df["PAY RATE"].to_numpy() * 1.5, 2), 0)
     df["DT RATE"] = np.where(df["DT PAY"].to_numpy() > 0, np.round(df["PAY RATE"].to_numpy() * 2.0, 2), 0)
 
-    # Horas OT/DT (división segura)
+    
     df["OT HOURS"] = np.where(df["OT RATE"].to_numpy() > 0, np.round(df["OT PAY"].to_numpy() / df["OT RATE"].to_numpy(), 2), 0)
     df["DT HOURS"] = np.where(df["DT RATE"].to_numpy() > 0, np.round(df["DT PAY"].to_numpy() / df["DT RATE"].to_numpy(), 2), 0)
 
-    # Check de seguridad: REG HOURS debe ser <= 40 sí o sí
+    
     if (df["REG HOURS"] > 40.0001).any():
         malos = df.loc[df["REG HOURS"] > 40.0001, ["EMPLOYEE", "REG PAY", "PAY RATE", "REG HOURS"]].head(10)
         raise ValueError(f"Quedaron filas con REG HOURS > 40. Ejemplos:\n{malos}")
 
-    # Orden final de columnas (igual a tu template)
+    
     orden = [
         "CLIENT", "WC CODE", "EMPLOYEE",
         "REG HOURS", "PAY RATE", "REG PAY",
@@ -76,7 +76,7 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     df = df[orden + [c for c in df.columns if c not in orden]]
 
     df.to_excel(ruta_salida, index=False)
-    print(f"✅ Listo: {ruta_salida}")
+    print(f"Listo: {ruta_salida}")
 
 if __name__ == "__main__":
     ruta_resumen   = r"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado_RESUMEN.xlsx"
@@ -84,4 +84,5 @@ if __name__ == "__main__":
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     ruta_salida = rf"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado_RESUMEN_FINAL{stamp}.xlsx"
     generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida)
+
 
