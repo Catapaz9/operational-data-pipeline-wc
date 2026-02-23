@@ -52,21 +52,28 @@
 
 ### 1. Asegúrese de tener en la misma carpeta:
 
-###    wc_sample_anonimizado.xlsx
+### \-wc_sample_anonimizado.xlsx
 
-###    PORCENTAJES_MUESTRA.xlsx
+### \-PORCENTAJES_MUESTRA.xlsx
 
 ###
 
 ### 2. Ejecutar: wc_project.py
 
-###    Limpia y estructura los datos operativos, y generando el siguiente archivo: wc_sample_anonimizado_RESUMEN.xlsx
+###  \-Limpia y estructura los datos operativos
+
+###  \- generando el siguiente archivo: wc_sample_anonimizado_RESUMEN.xlsx
 
 ###
 
-### 3. Con el archivo generado anteriormente, agregar: DIVISORES.xlsx y luego ejecutar: hours.py
+### 3. Con el archivo generado anteriormente, agregar: DIVISORES.xlsx 
+
+### \- Luego ejecutar: hours.py
+
+###
 
 ### *Datos utilizados fueron anonimizados para fines demostrativos.*   
+
 
 
 
