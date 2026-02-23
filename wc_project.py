@@ -92,7 +92,8 @@ df = calcular_total_por_wc_code(df, ruta_porcentajes)
 resumen_final = generar_resumen_por_cliente(df)
 
 resumen_final.to_excel(ruta_salida, index=False)
-print(f"✅ Archivo creado: {ruta_salida}")
+print(f"Archivo creado: {ruta_salida}")
+
 
 
 
