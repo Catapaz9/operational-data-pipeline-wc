@@ -62,17 +62,20 @@
 
 ###  \-Limpia y estructura los datos operativos
 
-###  \- generando el siguiente archivo: wc_sample_anonimizado_RESUMEN.xlsx
+###  \- Genera el siguiente archivo: wc_sample_anonimizado_RESUMEN.xlsx
 
 ###
 
-### 3. Con el archivo generado anteriormente, agregar: DIVISORES.xlsx 
+### 3. Con el archivo generado anteriormente:
+
+### \- Agregar: DIVISORES.xlsx 
 
 ### \- Luego ejecutar: hours.py
 
 ###
 
 ### *Datos utilizados fueron anonimizados para fines demostrativos.*   
+
 
 
 
