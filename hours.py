@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 from datetime import datetime
+from pathlib import Path
 
 def _to_float_from_text(s: str) -> float:
     if s is None or (isinstance(s, float) and pd.isna(s)):
@@ -10,14 +11,14 @@ def _to_float_from_text(s: str) -> float:
     m = re.search(r"(\d+(\.\d+)?)", s)
     return float(m.group(1)) if m else float("nan")
 
-def leer_pay_rates(ruta_divisores: str) -> np.ndarray:
+def leer_pay_rates(ruta_divisores) -> np.ndarray:
     div = pd.read_excel(ruta_divisores)
     if "PAY RATE" not in div.columns:
         raise ValueError("DIVISORES.xlsx no tiene columna 'PAY RATE'")
 
     rates = (
         div["PAY RATE"]
-        .apply(_to_float_from_text) 
+        .apply(_to_float_from_text)
         .dropna()
         .astype(float)
         .unique()
@@ -27,7 +28,7 @@ def leer_pay_rates(ruta_divisores: str) -> np.ndarray:
         raise ValueError("No se encontraron PAY RATE válidos en DIVISORES.xlsx")
     return rates
 
-def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: str):
+def generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida):
     df = pd.read_excel(ruta_resumen)
 
     required = ["REG PAY", "OT PAY", "DT PAY"]
@@ -35,14 +36,12 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     if faltan:
         raise ValueError(f"Faltan columnas en el resumen: {faltan}")
 
-    
     for c in required:
         df[c] = df[c].astype(str).str.replace(",", ".", regex=False)
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
 
     rates = leer_pay_rates(ruta_divisores)
 
-    
     rate_req = df["REG PAY"].to_numpy() / 40.0
     idx = np.searchsorted(rates, rate_req, side="left")
     idx = np.clip(idx, 0, len(rates) - 1)
@@ -51,20 +50,21 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     df["PAY RATE"] = np.round(pay_rate, 2)
     df["REG HOURS"] = np.round(df["REG PAY"].to_numpy() / pay_rate, 2)
 
-    
     df["OT RATE"] = np.where(df["OT PAY"].to_numpy() > 0, np.round(df["PAY RATE"].to_numpy() * 1.5, 2), 0)
     df["DT RATE"] = np.where(df["DT PAY"].to_numpy() > 0, np.round(df["PAY RATE"].to_numpy() * 2.0, 2), 0)
 
-    
-    df["OT HOURS"] = np.where(df["OT RATE"].to_numpy() > 0, np.round(df["OT PAY"].to_numpy() / df["OT RATE"].to_numpy(), 2), 0)
-    df["DT HOURS"] = np.where(df["DT RATE"].to_numpy() > 0, np.round(df["DT PAY"].to_numpy() / df["DT RATE"].to_numpy(), 2), 0)
+    df["OT HOURS"] = 0.0
+    mask_ot = df["OT RATE"] > 0
+    df.loc[mask_ot, "OT HOURS"] = np.round(df.loc[mask_ot, "OT PAY"] / df.loc[mask_ot, "OT RATE"], 2)
 
-    
+    df["DT HOURS"] = 0.0
+    mask_dt = df["DT RATE"] > 0
+    df.loc[mask_dt, "DT HOURS"] = np.round(df.loc[mask_dt, "DT PAY"] / df.loc[mask_dt, "DT RATE"], 2)
+
     if (df["REG HOURS"] > 40.0001).any():
         malos = df.loc[df["REG HOURS"] > 40.0001, ["EMPLOYEE", "REG PAY", "PAY RATE", "REG HOURS"]].head(10)
         raise ValueError(f"Quedaron filas con REG HOURS > 40. Ejemplos:\n{malos}")
 
-    
     orden = [
         "CLIENT", "WC CODE", "EMPLOYEE",
         "REG HOURS", "PAY RATE", "REG PAY",
@@ -79,10 +79,16 @@ def generar_resumen_final(ruta_resumen: str, ruta_divisores: str, ruta_salida: s
     print(f"Listo: {ruta_salida}")
 
 if __name__ == "__main__":
-    ruta_resumen   = r"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado_RESUMEN.xlsx"
-    ruta_divisores = r"C:\Users\Cata\OneDrive\Desktop\WC project\DIVISORES.xlsx"
+    base_dir = Path(__file__).resolve().parent
+
+    ruta_resumen = base_dir / "wc_sample_anonimizado_RESUMEN.xlsx"
+    ruta_divisores = base_dir / "DIVISORES.xlsx"
+
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    ruta_salida = rf"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado_RESUMEN_FINAL{stamp}.xlsx"
-    generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida)
+    ruta_salida = base_dir / f"wc_sample_anonimizado_RESUMEN_FINAL_{stamp}.xlsx"
+
+    generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida))
+
+
 
 
