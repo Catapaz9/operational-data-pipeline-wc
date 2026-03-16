@@ -76,9 +76,9 @@ def generar_resumen_por_cliente(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-ruta_entrada = r"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado.xlsx"
-ruta_porcentajes = r"C:\Users\Cata\OneDrive\Desktop\WC project\PORCENTAJES_MUESTRA.xlsx"
-ruta_salida = r"C:\Users\Cata\OneDrive\Desktop\WC project\wc_sample_anonimizado_RESUMEN.xlsx"
+ruta_entrada = "wc_sample_anonimizado.xlsx"
+ruta_porcentajes = "PORCENTAJES_MUESTRA.xlsx"
+ruta_salida = "wc_sample_anonimizado_RESUMEN.xlsx"
 
 df = pd.read_excel(ruta_entrada)
 df = normalizar_cols(df)
