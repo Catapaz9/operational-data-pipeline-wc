@@ -75,24 +75,24 @@ def generar_resumen_por_cliente(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+if __name__ == "__main__":
+    ruta_entrada = "wc_sample_anonimizado.xlsx"
+    ruta_porcentajes = "PORCENTAJES_MUESTRA.xlsx"
+    ruta_salida = "wc_sample_anonimizado_RESUMEN.xlsx"
 
-ruta_entrada = "wc_sample_anonimizado.xlsx"
-ruta_porcentajes = "PORCENTAJES_MUESTRA.xlsx"
-ruta_salida = "wc_sample_anonimizado_RESUMEN.xlsx"
+    df = pd.read_excel(ruta_entrada)
+    df = normalizar_cols(df)
 
-df = pd.read_excel(ruta_entrada)
-df = normalizar_cols(df)
+    requeridas = ["CLIENT", "WC CODE", "EMPLOYEE", "REG PAY", "OT PAY", "DT PAY", "SUBTOTAL"]
+    faltan = [c for c in requeridas if c not in df.columns]
+    if faltan:
+        raise ValueError(f"Falta(n) columna(s) requerida(s) en {ruta_entrada}: {faltan}..."). Columnas actuales: {list(df.columns)}")
 
-requeridas = ["CLIENT", "WC CODE", "EMPLOYEE", "REG PAY", "OT PAY", "DT PAY", "SUBTOTAL"]
-faltan = [c for c in requeridas if c not in df.columns]
-if faltan:
-    raise ValueError(f"Falta(n) columna(s) requerida(s) en 08.02.xlsx: {faltan}. Columnas actuales: {list(df.columns)}")
+    df = calcular_total_por_wc_code(df, ruta_porcentajes)
+    resumen_final = generar_resumen_por_cliente(df)
 
-df = calcular_total_por_wc_code(df, ruta_porcentajes)
-resumen_final = generar_resumen_por_cliente(df)
-
-resumen_final.to_excel(ruta_salida, index=False)
-print(f"Archivo creado: {ruta_salida}")
+    resumen_final.to_excel(ruta_salida, index=False)
+    print(f"Archivo creado: {ruta_salida}")
 
 
 
