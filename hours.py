@@ -87,7 +87,7 @@ if __name__ == "__main__":
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     ruta_salida = base_dir / f"wc_sample_anonimizado_RESUMEN_FINAL_{stamp}.xlsx"
 
-    generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida))
+    generar_resumen_final(ruta_resumen, ruta_divisores, ruta_salida)
 
 
 
