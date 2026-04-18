@@ -86,7 +86,7 @@ if __name__ == "__main__":
     requeridas = ["CLIENT", "WC CODE", "EMPLOYEE", "REG PAY", "OT PAY", "DT PAY", "SUBTOTAL"]
     faltan = [c for c in requeridas if c not in df.columns]
     if faltan:
-        raise ValueError(f"Falta(n) columna(s) requerida(s) en {ruta_entrada}: {faltan}..."). Columnas actuales: {list(df.columns)}")
+        raise ValueError(f"Falta(n) columna(s) requerida(s) en {ruta_entrada}: {faltan}. Columnas actuales: {list(df.columns)}")
 
     df = calcular_total_por_wc_code(df, ruta_porcentajes)
     resumen_final = generar_resumen_por_cliente(df)
